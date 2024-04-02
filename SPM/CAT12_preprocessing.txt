@@ -1,0 +1,44 @@
+####### This document contains the basic instructions regarding the usage of CAT12 ########
+
+#### preprocessing MRIs (in NIFTI format) in a specified directory ####
+:> CAT12 is a software package for measuring brain volume and thickness -> It is similar to FreeSurfer, but much faster. It performs VBM, SBM, and RBM.
+
+/media/dataanalyticlab/Drive2/MATLAB/spm12/toolbox/cat12/standalone/cat_standalone.sh -ns -e -m /media/dataanalyticlab/Drive2/MATLAB/R2021b/bin/matlab -b /media/dataanalyticlab/Drive2/MATLAB/spm12/toolbox/cat12/standalone/cat_standalone_segment.m /media/dataanalyticlab/Drive2/MANSOOR/Dataset/Test_SPM12/IXI041-Guys-0706-T1.nii.gz
+
+################### output data organization #####################
+-> the output files are stored either in the CAT12 folder structure (mri, label, report, and surface) or in BIDS format
+-> `label' contains both volume featues (catROI) and thickness features (catROI[s] for surface atlases)
+-> `surf' contains the pial (outer), central, and white (inner) surface files in .gii format
+	:> contains the thickness and pbt (projection based thickness) measurements for the cortical surface in "h.thickness.*" format -> such files can be loaded in python using "np.fromfile(thick_in_file, dtype=np.float32)" 
+-> `mri' dir contains five files, with the prefixes ``mwp1`` (grey matter segmentation), ``mwp2`` (white matter segmentation), ``p`` (segmented anatomical image with the skull and face removed), ``wm`` (segmented anatomical scan warped to MNI space), and ``y`` (inverse deformation field, used to identify and correct for field inhomogeneities). 
+	:>  after smoothing with a FWHM Gaussian Kernal of size 8 mm [8 8 8], the smoothed (blurred) gm images are stored with the prefix `s'
+	
+
+#### parallelize the preprocessing pipeline #####
+
+/media/dataanalyticlab/Drive2/MATLAB/spm12/toolbox/cat12/standalone/cat_parallelize.sh -p 8 -l /media/dataanalyticlab/Drive2/MANSOOR/Dataset/Test_SPM12/tmp -c "/media/dataanalyticlab/Drive2/MATLAB/spm12/toolbox/cat12/standalone/cat_standalone.sh -ns -e -m /media/dataanalyticlab/Drive2/MATLAB/R2021b/bin/matlab -b /media/dataanalyticlab/Drive2/MATLAB/spm12/toolbox/cat12/standalone/cat_standalone_segment.m" /media/dataanalyticlab/Drive2/MANSOOR/Dataset/Test_SPM12/Preprocessing_BraTS/*/*_t1.nii.gz
+
+
+#### Post-processing and deriving additional cortical measurements #####
+Apart from the volumes in XML format in the label dir, additionally extract these values for surface data (except for thickness which is automatically extracted during segmentation). This has to be done after preprocessing the data and creating cortical surfaces. 
+
+
+% open CAT12 toolbox in matlab
+spm pet
+
+
+% get csv files for the roi xml features/files in the label directory
+ROI Tools -> Estimate mean/volume inside ROI
+
+######## smoothing with kernal size 6mm (s6) #########
+cat_standalone.sh -m /Applications/MATLAB/MATLAB_Runtime/v93 \ 
+       -b ${cwd}/cat_standalone_smooth.m mri/sTRIO*nii \ 
+       -a1 "[6 6 6]" -a2 " 's6' "
+       
+           
+
+####### Adding matlab to the path ##########
+-> insert these lines in the /.bashrc file
+#MATLAB
+export PATH=/usr/local/MATLAB/R2014a/bin:$PATH
+export MATLABCMD=/usr/local/MATLAB/R2014a/bin/glnxa64/MATLAB

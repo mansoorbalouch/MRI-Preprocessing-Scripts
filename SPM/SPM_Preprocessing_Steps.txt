@@ -1,0 +1,30 @@
+This file contains a brief description of the (spatial processing) preprocessing pipeline followed using SPM12: (SPM12 only used for preprocessing MRI and doesn't return region-wise and surface-based measurements)
+
+
+=> Skull stripping
+=> Slice timing correction
+=> Realign
+=> Afiine registration to standard space (MNI) through re-orientation
+=> Tissue segmentation -> warping
+=> Bias field correction
+=> Intensity normalization
+
+
+-> 1st and 2nd level analysis
+
+
+
+:> For detailed batch scripting for preprocessing using SPM12 -> https://en.wikibooks.org/wiki/SPM/Batch
+
+
+-------------------------------------------------------------
+----------- functional MRI preprocessing pipeline -----------
+----- Tutorials by Andrew Jahn (https://andysbrainbook.readthedocs.io/en/latest/SPM/SPM_Short_Course/SPM_fMRI_Intro.html) -----------------------
+
+1. Realigning and Unwarping the Data
+2. Slice-Timing Correction
+3. Coregistration
+4. Segmentation
+5. Normalization
+6. Smoothing
+
