@@ -19,9 +19,9 @@ Before you begin, ensure you have the following installed:
 
 Clone this repository to your local machine using:
 
-    ```bash
-    git clone https://github.com/mansoorbalouch/MRI-Preprocessing-Scripts.git
-    cd MRI-Preprocessing-Scripts
+   ```bash
+   git clone https://github.com/mansoorbalouch/MRI-Preprocessing-Scripts.git
+   cd MRI-Preprocessing-Scripts
 
 ## Features
 
